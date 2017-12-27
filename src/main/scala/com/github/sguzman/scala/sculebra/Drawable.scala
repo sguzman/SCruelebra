@@ -6,6 +6,7 @@ import org.scalajs.dom.html.Canvas
 trait Drawable {
   val x: Int
   val y: Int
+  val radius: Int
 
   def draw(implicit ctx: dom.CanvasRenderingContext2D, canvas: Canvas): Unit
 }
