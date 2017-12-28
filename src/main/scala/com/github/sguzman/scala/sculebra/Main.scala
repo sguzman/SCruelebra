@@ -19,6 +19,7 @@ object Main {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     var food = Square(util.Random.nextInt(canvas.height), util.Random.nextInt(canvas.width), radius, canvas)
+    food.color = "white"
 
     var snaek = List(Square(canvas.width / 2, canvas.height / 2, radius, canvas))
     var direction = (0, -1)
