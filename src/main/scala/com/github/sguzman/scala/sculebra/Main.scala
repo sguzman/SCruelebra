@@ -18,6 +18,8 @@ object Main {
     ctx.fillStyle = "black"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
+    var food = Square(util.Random.nextInt(canvas.height), util.Random.nextInt(canvas.width), radius, canvas)
+
     var snaek = List(Square(canvas.width / 2, canvas.height / 2, radius, canvas))
     var direction = (0, -1)
 
@@ -31,6 +33,8 @@ object Main {
     dom.window.setInterval(() => {
       ctx.fillStyle = "black"
       ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+      food.draw
 
       snaek = snaek.map(_ + direction)
       snaek.foreach(_.draw)
