@@ -5,7 +5,7 @@ import org.scalajs.dom.html.Canvas
 case class Square(
                    x: Int,
                    y: Int,
-                   implicit val radius: Int,
+                   radius: Int,
                    canvas: Canvas
                  ) extends DrawableSnakePiece {
   def +(tup: (Int, Int)): Square =
