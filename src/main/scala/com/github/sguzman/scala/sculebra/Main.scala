@@ -35,10 +35,18 @@ object Main {
       ctx.fillStyle = "black"
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      food.draw
+      if (distance(snaek.head, food) < food.radius * 2) {
+        food = Square(util.Random.nextInt(canvas.height - 1) / 2, util.Random.nextInt(canvas.width - 1) / 2, radius, canvas)
+        food.color = "white"
+        snaek :+ Square(canvas.width / 2, canvas.height / 2, radius, canvas)
+      }
 
       snaek = snaek.map(_ + direction)
+      food.draw
       snaek.foreach(_.draw)
     }, 50)
   }
+
+  def distance(objA: Square, objB: Square): Double =
+    math.sqrt(math.pow(objA.x - objB.x, 2) + math.pow(objA.y - objB.y, 2))
 }
