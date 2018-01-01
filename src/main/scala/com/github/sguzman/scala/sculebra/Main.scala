@@ -32,13 +32,11 @@ object Main {
     }
 
     dom.window.setInterval(() => {
-      ctx.fillStyle = "black"
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      clear(ctx, canvas)
 
       if (distance(snaek.head, food) < food.radius * 2) {
-        food = Square(util.Random.nextInt(canvas.height - 1) / 2, util.Random.nextInt(canvas.width - 1) / 2, radius, canvas)
-        food.color = "white"
         snaek :+ Square(canvas.width / 2, canvas.height / 2, radius, canvas)
+        food = Main.food(canvas, radius)
       }
 
       snaek = snaek.map(_ + direction)
@@ -49,4 +47,15 @@ object Main {
 
   def distance(objA: Square, objB: Square): Double =
     math.sqrt(math.pow(objA.x - objB.x, 2) + math.pow(objA.y - objB.y, 2))
+
+  def clear(ctx: CanvasRenderingContext2D, canvas: Canvas): Unit = {
+    ctx.fillStyle = "black"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+  }
+
+  def food(canvas: Canvas, radius: Int): Square = {
+    val fd = Square(util.Random.nextInt(canvas.height - 1) / 2, util.Random.nextInt(canvas.width - 1) / 2, radius, canvas)
+    fd.color = "white"
+    fd
+  }
 }
