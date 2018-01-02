@@ -18,6 +18,11 @@ object Main {
       ctx.fillStyle = this.color
       ctx.fill()
     }
+    def >(): (Int, Int) = (this.x, this.y)
+    def <(tup: (Int, Int)): Unit = {
+      this.x = tup._1
+      this.y = tup._2
+    }
   }
 
   def main(args: Array[String]): Unit = {
@@ -30,14 +35,14 @@ object Main {
 
     Random.setSeed(System.currentTimeMillis())
 
-    val waitTimeBetweenFrames = 250
+    val waitTimeBetweenFrames = 50
 
     val input$ = Observable.fromEvent(document.body, "keypress")
       .map(_.asInstanceOf[KeyboardEvent])
       .map(_.charCode)
 
     var direction = List(-1, 0)
-    var snaek = Circle(canvas.width / 2, canvas.height / 2)
+    var snaek = List(Circle(canvas.width / 2, canvas.height / 2))
 
     var food = Circle(Random.nextInt(canvas.width), Random.nextInt(canvas.height),  "black")
 
@@ -51,17 +56,25 @@ object Main {
 
     val gameLoop$ = Observable.interval(waitTimeBetweenFrames)
 
-    gameLoop$.filter(_ => snaek.x > canvas.width).subscribe(_ => snaek.x = 0)
-    gameLoop$.filter(_ => snaek.x < 0).subscribe(_ => snaek.x = canvas.width)
-    gameLoop$.filter(_ => snaek.y > canvas.height).subscribe(_ => snaek.y = 0)
-    gameLoop$.filter(_ => snaek.y < 0).subscribe(_ => snaek.y = canvas.height)
+    gameLoop$.filter(_ => snaek.head.x > canvas.width).subscribe(_ => snaek.head.x = 0)
+    gameLoop$.filter(_ => snaek.head.x < 0).subscribe(_ => snaek.head.x = canvas.width)
+    gameLoop$.filter(_ => snaek.head.y > canvas.height).subscribe(_ => snaek.head.y = 0)
+    gameLoop$.filter(_ => snaek.head.y < 0).subscribe(_ => snaek.head.y = canvas.height)
+
+    gameLoop$.filter(_ => snaek.head >:< food).subscribe(
+      s => {
+        food = Circle(Random.nextInt(canvas.width), Random.nextInt(canvas.height),  "black")
+        snaek = Circle(snaek.head.x, snaek.head.y) +: snaek
+      }
+    )
 
     gameLoop$.subscribe(s => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      snaek = snaek + direction
-      snaek.draw(ctx)
-      food.draw(ctx)
+      snaek = (snaek.head + direction) +: snaek.tail
+
+      snaek foreach (_ draw ctx)
+      food draw ctx
     })
   }
 }
