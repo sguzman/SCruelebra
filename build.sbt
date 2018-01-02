@@ -2,7 +2,7 @@ enablePlugins(ScalaJSPlugin)
 scalaJSUseMainModuleInitializer := true
 
 /** Name of project */
-name := "Sculebra"
+name := "SCruelebra"
 
 /** Organization */
 organization := "com.github.sguzman"

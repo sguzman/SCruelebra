@@ -1,2 +1,2 @@
-# Sculebra
-A Scala.js clone of a the time-weary snake game, using the HTML5 canvas element
+# SCruelebra
+A redone version of my Scala.js snake game using RxScala
