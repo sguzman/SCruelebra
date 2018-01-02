@@ -41,7 +41,6 @@ object Main {
     gameLoop$.subscribe(s => {
       ctx.beginPath
       ctx.arc(snaek.head.x, snaek.head.y, snaek.head.radius, 0, 2 * Math.PI)
-      ctx.stroke()
       ctx.fillStyle = "red"
       ctx.fill()
     })
