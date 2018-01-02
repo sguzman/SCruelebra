@@ -19,15 +19,14 @@ object Main {
       .map(_.asInstanceOf[KeyboardEvent])
       .map(_.charCode)
 
-    val left$ = input$.filter(_ == 97).subscribe(s => println("left"))
-    val right$ = input$.filter(_ == 100).subscribe(s => println("right"))
-    val up$ = input$.filter(_ == 119).subscribe(s => println("up"))
-    val down$ = input$.filter(_ == 115).subscribe(s => println("down"))
+    val left$ = input$.filter(_ == 97).mapTo(-1, 0)
+    val right$ = input$.filter(_ == 100).mapTo(1, 0)
+    val up$ = input$.filter(_ == 119).mapTo(0, -1)
+    val down$ = input$.filter(_ == 115).mapTo(0, 1)
 
-    Observable.fromEvent(document.body, "keypress")
-      .map(_.asInstanceOf[KeyboardEvent])
-      .map(_.charCode)
-      .subscribe(
+    val inputs$ = left$.merge(right$).merge(up$).merge(down$).distinctUntilChanged
+
+    inputs$.subscribe(
       s => println(s)
     )
   }
