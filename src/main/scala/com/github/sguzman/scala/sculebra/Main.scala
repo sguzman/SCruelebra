@@ -6,10 +6,18 @@ import org.scalajs.dom.raw.KeyboardEvent
 import org.scalajs.dom.{CanvasRenderingContext2D, document}
 import rxscalajs.Observable
 
+import scala.util.Random
+
 object Main {
-  final case class Circle(var x: Int, var y: Int, radius: Int = 10) {
+  final case class Circle(var x: Int, var y: Int, color: String = "red", radius: Int = 10) {
     def >:<(that: Circle): Boolean = math.sqrt(math.pow(this.x - that.x, 2) + math.pow(this.y - that.y, 2)) < this.radius
-    def +(tup: List[Int]): Circle = Circle(this.x + tup.head, this.y + tup.last, this.radius)
+    def +(tup: List[Int]): Circle = Circle(this.x + (tup.head * (this.radius * 2)), this.y + (tup.last * (this.radius * 2)), this.color, this.radius)
+    def draw(ctx: CanvasRenderingContext2D): Unit = {
+      ctx.beginPath
+      ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
+      ctx.fillStyle = this.color
+      ctx.fill()
+    }
   }
 
   def main(args: Array[String]): Unit = {
@@ -20,6 +28,8 @@ object Main {
     val ctx: CanvasRenderingContext2D = canvas.getContext("2d")
       .asInstanceOf[dom.CanvasRenderingContext2D]
 
+    Random.setSeed(System.currentTimeMillis())
+
     val waitTimeBetweenFrames = 250
 
     val input$ = Observable.fromEvent(document.body, "keypress")
@@ -28,6 +38,8 @@ object Main {
 
     var direction = List(-1, 0)
     var snaek = Circle(canvas.width / 2, canvas.height / 2)
+
+    var food = Circle(Random.nextInt(canvas.width), Random.nextInt(canvas.height),  "black")
 
     val left$ = input$.filter(_ == 97).mapTo(List(-1, 0))
     val right$ = input$.filter(_ == 100).mapTo(List(1, 0))
@@ -47,12 +59,9 @@ object Main {
     gameLoop$.subscribe(s => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      snaek = snaek + direction.map(_ * (snaek.radius * 2))
-
-      ctx.beginPath
-      ctx.arc(snaek.x, snaek.y, snaek.radius, 0, 2 * Math.PI)
-      ctx.fillStyle = "red"
-      ctx.fill()
+      snaek = snaek + direction
+      snaek.draw(ctx)
+      food.draw(ctx)
     })
   }
 }
